@@ -57,6 +57,8 @@ async def get_all_crew():
 
 @app.get("/crew/{crew_id}", response_model=CrewMemberResponse)
 async def get_crew_member(crew_id: int):
+    for crew in crew_members:
+        return crew["id"]
     return {"message": "crew with id crew_id"}  # TODO
 
 
