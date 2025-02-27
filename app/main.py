@@ -50,15 +50,34 @@ def read_root():
     return {"message": "Bienvenue sur l'API AirCrew"}
 
 
+
+
 @app.get("/crew/", response_model=List[CrewMemberResponse])
 async def get_all_crew():
     return crew_members
 
 
+@app.get("/crew/stats")
+async def get_stats():
+    statistiques={}
+
+    for crew in crew_members:
+        if crew["role"] not in statistiques:
+            statistiques[crew["role"]] = {"total": 0, "available": 0}
+            statistiques[crew["role"]]["total"]+=1
+        if crew["availability"] > 0:
+            statistiques[crew["role"]]["available"]+=1
+        
+        else:
+            return ("probleme serveur")
+
+    return statistiques # TODO
+
 @app.get("/crew/{crew_id}", response_model=CrewMemberResponse)
 async def get_crew_member(crew_id: int):
     for crew in crew_members:
-        return crew["id"]
+        if crew_id == crew["id"]:
+            return crew
     return {"message": "crew with id crew_id"}  # TODO
 
 
@@ -78,16 +97,26 @@ async def create_crew_member(crew_member: CrewMemberCreate):
 
 @app.delete("/crew/{crew_id}")
 async def delete_crew_member(crew_id: int):
-    return {"message": "crew with id crew_id"}  # TODO
+    for crew in crew_members:
+        if crew_id == crew["id"]:
+            crew_members.remove(crew)
+        return {"message": "crew with id {crew_id} deleted"}
+    else :
+        return("erreur id non trouvé")  # TODO
 
 
 @app.put("/crew/{crew_id}/update-availability")
-async def update_availability(crew_id: int):
-    return {"message": "Availability updated"}  # TODO
+async def update_availability(crew_id: int, available_new: int):
+    for crew in crew_members:
+        if available_new <0:
+            return("la disponibilité doit etre positive")
+        else:
+
+            if crew_id == crew["id"]:
+                crew["availability"]=available_new
+                return("la nouvelle disponibilité est changée pour {crew_id}")
+            else:
+                return("probleme interne du serveur") # TODO
 
 
-@app.get("/crew/stats")
-async def get_stats():
-    return {
-        "PILOT": {"total": 0, "available": 0},
-    }  # TODO
+
