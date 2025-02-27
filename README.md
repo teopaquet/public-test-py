@@ -57,4 +57,4 @@ Pour simplifier le problème, les données ne sont pas stocké en base de donné
 - Créer un environnement virtuel venv avec python > 3.12 (`python -m venv venv`)
 - Activer l'environnement virtuel (`source venv/bin/activate` sur mac/linux, `venv\Scripts\activate` sur windows)
 - Installer les dépendances avec `pip install -r requirements.txt`
-- Lancer le serveur avec `uvicorn main:app --reload`
+- Lancer le serveur avec `uvicorn app.main:app --reload`
